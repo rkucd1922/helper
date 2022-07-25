@@ -14,13 +14,17 @@ from PyPDF2 import PdfFileMerger
 import seaborn as sns
 
 def get_dev(atoms = None, type_map = None, graphs = None):
+    """
+    atoms = the atoms that are going to be checked for model deviations
+    type_map = chemical symbol type dictionary (ex:{'O': 0, 'Si': 1, 'Au': 2})
+    graphs = list containing the models that we will be checking the deviations between
+    """
+    
     pos = np.array([a.get_positions().flatten() for a in atoms])
     cell = np.array([a.cell.array.flatten() for a in atoms])
     types = [type_map[a.symbol] for a in atoms[0]]
 
-    gs = graphs
-
-    models = [DeepPot(g) for g in gs]
+    models = [DeepPot(g) for g in graphs]
 
     dev = calc_model_devi(pos, cell, types, models, nopbc=False)[:, 4]
     return dev 
